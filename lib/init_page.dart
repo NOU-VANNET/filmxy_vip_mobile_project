@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vip/auth_page.dart';
+import 'package:vip/login_page.dart';
 import 'package:vip/models/cache_key_model.dart';
 import 'package:vip/models/user_model.dart';
 import 'package:vip/pages/bottom_nav.dart';

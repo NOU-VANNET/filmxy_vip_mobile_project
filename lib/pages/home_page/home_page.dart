@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
         child: Image.asset(
           "assets/icons/v.png",
           fit: BoxFit.fitHeight,
-          height: 50.sp,
+          height: 40.sp,
         ),
       ),
       bottom: PreferredSize(

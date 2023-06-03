@@ -63,6 +63,12 @@ class Services implements Repository {
     }
   }
 
+  Future<bool> get canShowMovie async {
+    var res = await get(Uri.parse(Urls.apiDomain(route: 'homepage')),
+        headers: header);
+    return res.statusCode == 200;
+  }
+
   @override
   Future<List<GenreTypeModel>> getGenreType(String url) async {
     try {
@@ -279,6 +285,40 @@ class Services implements Repository {
     }
   }
 
+  Future<Map<String, dynamic>> serverRegister(String username, String email, String password, String inviteCode) async {
+    try {
+      Map<String, dynamic> body = {
+        "username": username,
+        "email": email,
+        "password": password,
+        "confirm_password": password,
+        "invite_code": inviteCode,
+      };
+
+      var res = await post(
+        Uri.parse(
+          Urls.apiDomain(route: 'register'),
+        ),
+        headers: _xHeader,
+        body: jsonEncode(body),
+      );
+      if (res.statusCode == 200) {
+        return {
+          "code": "success",
+          "data": res.body,
+        };
+      } else {
+        final map = json.decode(res.body);
+        return {"code": "error", "message": map['message']};
+      }
+    } on PlatformException catch (e) {
+      return {
+        "code": "error",
+        "message": e.message.toString(),
+      };
+    }
+  }
+
   @override
   Future<Map<String, dynamic>> serverLogin(
       String login, String password) async {
@@ -286,7 +326,7 @@ class Services implements Repository {
       Map<String, dynamic> body = {"login": login, "password": password};
       Response response = await post(
         Uri.parse(Urls.apiDomain(route: "login")),
-        body: body,
+        body: jsonEncode(body),
         headers: _xHeader,
       );
       if (response.statusCode == 200) {

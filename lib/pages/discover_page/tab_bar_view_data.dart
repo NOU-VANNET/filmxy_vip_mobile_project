@@ -88,23 +88,91 @@ class _TabBarViewDataState extends State<TabBarViewData> {
           appBar: AppBar(
             centerTitle: true,
             actions: [
-              IconButton(
-                onPressed: () => Navigator.of(context).push(
-                  MyPageRoute(
-                    builder: (_) => const SearchPage(),
-                  ),
-                ),
-                icon: Icon(
-                  CupertinoIcons.search,
-                  color: Colors.white,
-                  size: 24.sp,
-                ),
-              ),
+              widget.showFilterOptions &&
+                      widget.tabsData[currentSelectedIndex]["label"] !=
+                          "Playlist"
+                  ? SizedBox(
+                      width: 124,
+                      child: PopupMenuButton<String>(
+                        onSelected: (value) {
+                          bool canLoad = true;
+                          String temp = "All";
+                          if (value == "4k") {
+                            temp = "4K Resolution";
+                          } else if (value == "18plus") {
+                            temp = "Adult Contents";
+                          }
+                          if (canLoad) {
+                            setState(() {
+                              _currentFilter = temp;
+                            });
+                            _currentType = value;
+                            Get.put(TabsDataController()).initTab(
+                              value.toUpperCase(),
+                              widget.tabsData[currentSelectedIndex]["link"],
+                              value,
+                            );
+                          }
+                        },
+                        color: Colors.grey.shade800,
+                        child: Row(
+                          children: [
+                            Text(
+                              _currentFilter,
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 15.sp,
+                              ),
+                            ),
+                            const Spacer(),
+                            RotatedBox(
+                              quarterTurns: 1,
+                              child: Icon(
+                                Icons.play_arrow,
+                                color: Colors.white70,
+                                size: 22.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value:
+                                "${widget.tabsData[currentSelectedIndex]["link"]}",
+                            child: Text(
+                              "All",
+                              style: TextStyle(
+                                  color: Colors.white70, fontSize: 15.sp),
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: "4k",
+                            child: Text(
+                              "4K Resolution",
+                              style: TextStyle(
+                                  color: Colors.white70, fontSize: 15.sp),
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: "18plus",
+                            child: Text(
+                              "Adult Contents",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 15.sp,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox(),
+              SizedBox(width: 12),
             ],
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(45.sp),
               child: SizedBox(
-                height: 45.sp,
+                height: 51.sp,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   controller: tabController,
@@ -124,8 +192,7 @@ class _TabBarViewDataState extends State<TabBarViewData> {
                                 currentSelectedIndex = index;
                               });
                               Get.put(TabsDataController()).initTab(
-                                widget.tabsData[currentSelectedIndex]
-                                    ["label"],
+                                widget.tabsData[currentSelectedIndex]["label"],
                                 widget.tabsData[currentSelectedIndex]["link"],
                                 _currentType,
                               );
@@ -135,8 +202,7 @@ class _TabBarViewDataState extends State<TabBarViewData> {
                               backgroundColor: Colors.transparent,
                               shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.zero),
-                              padding:
-                                  EdgeInsets.symmetric(horizontal: 12.sp),
+                              padding: EdgeInsets.symmetric(horizontal: 12.sp),
                             ),
                             child: Text(
                               widget.tabsData[index]["label"],
@@ -152,8 +218,7 @@ class _TabBarViewDataState extends State<TabBarViewData> {
                             ),
                           ),
                           AnimatedOpacity(
-                            opacity:
-                                currentSelectedIndex == index ? 1.0 : 0.0,
+                            opacity: currentSelectedIndex == index ? 1.0 : 0.0,
                             duration: const Duration(milliseconds: 200),
                             child: Container(
                               color: Colors.green,
@@ -175,170 +240,80 @@ class _TabBarViewDataState extends State<TabBarViewData> {
                 secondary: Colors.transparent,
               ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (widget.showFilterOptions &&
-                    widget.tabsData[currentSelectedIndex]["label"] !=
-                        "Playlist")
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 12.sp,
-                      right: 12.sp,
-                      top: 16.sp,
-                      bottom: 12.sp,
-                    ),
-                    child: PopupMenuButton<String>(
-                      onSelected: (value) {
-                        bool canLoad = true;
-                        String temp = "All";
-                        if (value == "4k") {
-                          temp = "4K Resolution";
-                        } else if (value == "18plus") {
-                          temp = "Adult Contents";
-                        }
-                        if (canLoad) {
-                          setState(() {
-                            _currentFilter = temp;
-                          });
-                          _currentType = value;
-                          Get.put(TabsDataController()).initTab(
-                            value.toUpperCase(),
-                            widget.tabsData[currentSelectedIndex]["link"],
-                            value,
-                          );
-                        }
-                      },
-                      color: Colors.grey.shade900,
-                      child: Row(
-                        children: [
-                          Text(
-                            _currentFilter,
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 15.sp,
+            child: ctrl.data.isNotEmpty
+                ? Stack(
+                    children: [
+                      Scrollbar(
+                        radius: const Radius.circular(4),
+                        child: GridView.builder(
+                          shrinkWrap: true,
+                          controller: scrollController,
+                          itemCount: ctrl.data.length,
+                          padding: EdgeInsets.only(
+                            bottom: isMobile ? 34.sp : 12.sp,
+                          ),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: isMobile ? 3 : 6,
+                            mainAxisExtent:
+                                isMobile ? (w + 56.sp) : (h + 10.sp),
+                          ),
+                          itemBuilder: (context, index) => GestureDetector(
+                            onTap: () => Navigator.of(context).push(
+                              MyPageRoute(
+                                builder: (builder) =>
+                                    DetailPage(movie: ctrl.data[index]),
+                              ),
                             ),
-                          ),
-                          const Spacer(),
-                          RotatedBox(
-                            quarterTurns: 1,
-                            child: Icon(
-                              Icons.play_arrow,
-                              color: Colors.white70,
-                              size: 22.sp,
-                            ),
-                          ),
-                        ],
-                      ),
-                      itemBuilder: (context) => [
-                        PopupMenuItem(
-                          value:
-                              "${widget.tabsData[currentSelectedIndex]["link"]}",
-                          child: Text(
-                            "All",
-                            style: TextStyle(
-                                color: Colors.white70, fontSize: 15.sp),
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: "4k",
-                          child: Text(
-                            "4K Resolution",
-                            style: TextStyle(
-                                color: Colors.white70, fontSize: 15.sp),
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: "18plus",
-                          child: Text(
-                            "Adult Contents",
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 15.sp,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ctrl.data.isNotEmpty
-                    ? Expanded(
-                        child: Stack(
-                          children: [
-                            Scrollbar(
-                              radius: const Radius.circular(4),
-                              child: GridView.builder(
-                                shrinkWrap: true,
-                                controller: scrollController,
-                                itemCount: ctrl.data.length,
-                                padding: EdgeInsets.only(
-                                  bottom: isMobile ? 34.sp : 12.sp,
-                                ),
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: isMobile ? 3 : 6,
-                                  mainAxisExtent: isMobile
-                                      ? (w + 56.sp)
-                                      : (h + 10.sp),
-                                ),
-                                itemBuilder: (context, index) =>
-                                    GestureDetector(
-                                  onTap: () => Navigator.of(context).push(
-                                    MyPageRoute(
-                                      builder: (builder) => DetailPage(movie: ctrl.data[index]),
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.all(2.sp),
-                                      child: PosterWidget(
-                                        posterImage: ctrl.data[index].thumbnail,
-                                        adult: ctrl.data[index].isAdult,
-                                        status: ctrl.data[index].status,
-                                        runningEpisode:
-                                            ctrl.data[index].runningEpisode,
-                                        id: ctrl.data[index].postId,
-                                        width: w,
-                                        height: w + 56.sp, title: '',
-                                      ),
-                                    ),
-                                  ),
+                            child: Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(2.sp),
+                                child: PosterWidget(
+                                  posterImage: ctrl.data[index].thumbnail,
+                                  adult: ctrl.data[index].isAdult,
+                                  status: ctrl.data[index].status,
+                                  runningEpisode:
+                                      ctrl.data[index].runningEpisode,
+                                  id: ctrl.data[index].postId,
+                                  width: w,
+                                  height: w + 56.sp,
+                                  title: '',
                                 ),
                               ),
                             ),
-                            Positioned(
-                              bottom: 4.sp,
-                              right: 0,
-                              left: 0,
-                              child: ctrl.isLoadingMore
-                                  ? Center(
-                                      child: SkeletonWidget(
-                                        width: width,
-                                        height: 26.h,
-                                      ),
-                                    )
-                                  : const SizedBox(),
-                            ),
-                          ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 4.sp,
+                        right: 0,
+                        left: 0,
+                        child: ctrl.isLoadingMore
+                            ? Center(
+                                child: SkeletonWidget(
+                                  width: width,
+                                  height: 26.h,
+                                ),
+                              )
+                            : const SizedBox(),
+                      ),
+                    ],
+                  )
+                : ctrl.isEmptyList
+                    ? Center(
+                        heightFactor: 10,
+                        child: Text(
+                          "Not found!",
+                          style: TextStyle(
+                            color: Colors.white54,
+                            fontSize: 16.sp,
+                          ),
                         ),
                       )
-                    : ctrl.isEmptyList
-                        ? Center(
-                            heightFactor: 25,
-                            child: Text(
-                              "Not found!",
-                              style: TextStyle(
-                                color: Colors.white54,
-                                fontSize: 16.sp,
-                              ),
-                            ),
-                          )
-                        : const Center(
-                            heightFactor: 18,
-                            child: CircularProgressIndicator(color: Colors.green),
-                          ),
-              ],
-            ),
+                    : const Center(
+                        heightFactor: 10,
+                        child: CircularProgressIndicator(color: Colors.green),
+                      ),
           ),
         );
       },

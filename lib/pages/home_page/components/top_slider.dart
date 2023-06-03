@@ -249,10 +249,10 @@ class _TopSliderWidgetState extends State<TopSliderWidget> {
 
   CarouselOptions options(BuildContext context) => CarouselOptions(
         height: isMobile
-            ? height / 2.6
+            ? height / 2.2
             : isTablet
-                ? height / 2.8
-                : height / 2.4,
+                ? height / 2.4
+                : height / 2,
         disableCenter: false,
         enlargeCenterPage: true,
         viewportFraction: isMobile

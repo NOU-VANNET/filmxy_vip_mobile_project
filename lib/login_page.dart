@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vip/my_videos_page.dart';
 import 'package:vip/models/cache_key_model.dart';
 import 'package:vip/models/user_model.dart';
 import 'package:vip/pages/bottom_nav.dart';
+import 'package:vip/register_page.dart';
 import 'package:vip/services/services.dart';
 import 'package:vip/utils/custom_page_transition.dart';
 import 'package:vip/utils/dark_light.dart';
@@ -35,7 +37,7 @@ class _AuthPageState extends State<AuthPage> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          toolbarHeight: 20.sp,
+          toolbarHeight: 40.sp,
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(isMobile ? 80.sp : 50.sp),
             child: Image.asset(
@@ -60,18 +62,19 @@ class _AuthPageState extends State<AuthPage> {
                 ),
               ),
               SizedBox(height: isMobile ? 30.sp : 25.sp),
-              if (widget.expired) Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: isMobile ? 12.sp : width / 1.5,
-                ),
-                child: Text(
-                  " The session is expired! Please log in with your account again.",
-                  style: TextStyle(
-                    color: Colors.redAccent,
-                    fontSize: 12.sp,
+              if (widget.expired)
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 12.sp : width / 1.5,
+                  ),
+                  child: Text(
+                    " The session is expired! Please log in with your account again.",
+                    style: TextStyle(
+                      color: Colors.redAccent,
+                      fontSize: 12.sp,
+                    ),
                   ),
                 ),
-              ),
               if (widget.expired) SizedBox(height: isMobile ? 14.sp : 10.sp),
               buildTextField(
                 loginEditor,
@@ -126,6 +129,33 @@ class _AuthPageState extends State<AuthPage> {
                         ),
                 ),
               ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: EdgeInsets.only(right: 24.sp, top: 12.sp),
+                  child: TextButton(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (ctx) => RegisterPage(
+                          callback: (email, pw) async {
+                            if (email.isNotEmpty && pw.isNotEmpty) {
+                              loginEditor.text = email;
+                              passwordEditor.text = pw;
+                              setState((){});
+                              await Future.delayed(const Duration(milliseconds: 100));
+                              login();
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      "Create an account",
+                      style: TextStyle(color: Colors.blue, fontSize: 14.sp),
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ),
@@ -174,38 +204,41 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Future login() async {
+    if (isLogging) return;
     setState(() => isLogging = true);
-    if (isLogging) {
-      Map<String, dynamic> result = await Services().serverLogin(
-        loginEditor.text.trim(),
-        passwordEditor.text,
+    Map<String, dynamic> result = await Services().serverLogin(
+      loginEditor.text,
+      passwordEditor.text,
+    );
+
+    if (result['code'] == "success") {
+      final map = json.decode(result["data"]);
+      UserModel user = UserModel(
+        username: map["user_name"],
+        expireIn: DateTime.now().toString(),
+        accessToken: map["token"],
       );
 
-      if (result['code'] == "success") {
-        final map = json.decode(result["data"]);
-        UserModel user = UserModel(
-          username: map["user_name"],
-          expireIn: DateTime.now().toString(),
-          accessToken: map["token"],
+      var db = await SharedPreferences.getInstance();
+      await db.setString(
+          CacheKeyModel.userModelKey, json.encode(user.toMap()));
+
+      token = user.accessToken;
+
+      bool canShowMovie = await Services().canShowMovie;
+
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MyPageRoute(
+            builder: (_) =>
+            canShowMovie ? const BottomNavPage() : const MyVideosPage(),
+          ),
+              (route) => false,
         );
-
-        var db = await SharedPreferences.getInstance();
-        await db.setString(CacheKeyModel.userModelKey, json.encode(user.toMap()));
-
-        token = user.accessToken;
-
-        if (mounted) {
-          Navigator.of(context).pushAndRemoveUntil(
-            MyPageRoute(
-              builder: (_) => const BottomNavPage(),
-            ),
-            (route) => false,
-          );
-        }
-      } else {
-        setState(() => isLogging = false);
-        Utils().showToast(result["message"]);
       }
+    } else {
+      setState(() => isLogging = false);
+      Utils().showToast(result["message"]);
     }
   }
 }
