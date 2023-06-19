@@ -91,7 +91,6 @@ class GridViewPostWidget extends StatelessWidget {
     return GridView.builder(
       shrinkWrap: true,
       itemCount: data.length,
-      physics: data.length < 6 ? const NeverScrollableScrollPhysics() : null,
       padding:
           EdgeInsets.symmetric(horizontal: isMobile ? 0 : 4.sp, vertical: 8.sp),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
