@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:vip/controllers/tabs_data_controller.dart';
 import 'package:vip/pages/detail_page/detail_page.dart';
@@ -10,6 +11,8 @@ import 'package:vip/utils/custom_page_transition.dart';
 import 'package:vip/utils/size.dart';
 import 'package:vip/widgets/poster_widget.dart';
 import 'package:vip/widgets/skeleton_widget.dart';
+
+import '../../utils/dark_light.dart';
 
 class TabBarViewData extends StatefulWidget {
   final void Function()? onDispose;
@@ -87,6 +90,9 @@ class _TabBarViewDataState extends State<TabBarViewData> {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
+            iconTheme: IconThemeData(
+              color: darkMode ? Colors.white70 : Colors.black,
+            ),
             actions: [
               widget.showFilterOptions &&
                       widget.tabsData[currentSelectedIndex]["label"] !=
@@ -120,7 +126,7 @@ class _TabBarViewDataState extends State<TabBarViewData> {
                             Text(
                               _currentFilter,
                               style: TextStyle(
-                                color: Colors.white70,
+                                color: darkMode ? Colors.white70 : Colors.black,
                                 fontSize: 15.sp,
                               ),
                             ),
@@ -129,7 +135,7 @@ class _TabBarViewDataState extends State<TabBarViewData> {
                               quarterTurns: 1,
                               child: Icon(
                                 Icons.play_arrow,
-                                color: Colors.white70,
+                                color: darkMode ? Colors.white70 : Colors.black,
                                 size: 22.sp,
                               ),
                             ),
@@ -170,9 +176,9 @@ class _TabBarViewDataState extends State<TabBarViewData> {
               SizedBox(width: 12),
             ],
             bottom: PreferredSize(
-              preferredSize: Size.fromHeight(45.sp),
+              preferredSize: Size.fromHeight(34.sp),
               child: SizedBox(
-                height: 51.sp,
+                height: 34.sp,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   controller: tabController,
@@ -183,50 +189,46 @@ class _TabBarViewDataState extends State<TabBarViewData> {
                       controller: tabController,
                       key: ValueKey(index),
                       index: index,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                currentSelectedIndex = index;
-                              });
-                              Get.put(TabsDataController()).initTab(
-                                widget.tabsData[currentSelectedIndex]["label"],
-                                widget.tabsData[currentSelectedIndex]["link"],
-                                _currentType,
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              elevation: 0,
-                              backgroundColor: Colors.transparent,
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.zero),
-                              padding: EdgeInsets.symmetric(horizontal: 12.sp),
-                            ),
-                            child: Text(
-                              widget.tabsData[index]["label"],
-                              style: TextStyle(
-                                decoration: TextDecoration.none,
-                                fontSize: index == currentSelectedIndex
-                                    ? 16.sp
-                                    : 15.sp,
-                                color: index == currentSelectedIndex
-                                    ? Colors.white
-                                    : Colors.white54,
-                              ),
+                      child: InkWell(
+                        splashColor: Colors.transparent,
+                        borderRadius: BorderRadius.circular(8),
+                        onTap: () {
+                          setState(() {
+                            currentSelectedIndex = index;
+                          });
+                          Get.put(TabsDataController()).initTab(
+                            widget.tabsData[currentSelectedIndex]["label"],
+                            widget.tabsData[currentSelectedIndex]["link"],
+                            _currentType,
+                          );
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.symmetric(horizontal: 4.sp),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: currentSelectedIndex == index
+                                ? Colors.green.shade700
+                                : darkMode
+                                    ? Colors.grey[800]
+                                    : Colors.grey[300],
+                          ),
+                          child: Text(
+                            widget.tabsData[index]["label"],
+                            style: GoogleFonts.lato(
+                              fontSize: normalLabelSize,
+                              color: currentSelectedIndex == index
+                                  ? Colors.white
+                                  : whiteBlack,
+                              fontWeight: FontWeight.w900,
                             ),
                           ),
-                          AnimatedOpacity(
-                            opacity: currentSelectedIndex == index ? 1.0 : 0.0,
-                            duration: const Duration(milliseconds: 200),
-                            child: Container(
-                              color: Colors.green,
-                              height: 3,
-                              width: width / 4.6,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -251,6 +253,7 @@ class _TabBarViewDataState extends State<TabBarViewData> {
                           itemCount: ctrl.data.length,
                           padding: EdgeInsets.only(
                             bottom: isMobile ? 34.sp : 12.sp,
+                            top: 12,
                           ),
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(

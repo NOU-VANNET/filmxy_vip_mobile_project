@@ -37,16 +37,6 @@ class _TopSliderWidgetState extends State<TopSliderWidget> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: isMobile ? 12.sp : 6.sp,
-              vertical: isMobile ? 5.sp : 0,
-            ),
-            child: Text(
-              widget.data["label"] as String,
-              style: normalLabelStyle,
-            ),
-          ),
           CarouselSlider.builder(
             itemCount: movies.length,
             options: options(context),
@@ -63,8 +53,8 @@ class _TopSliderWidgetState extends State<TopSliderWidget> {
                 height: isMobile ? 10.sp : 5.sp,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(movies.length,
-                      (i) => buildItemDotView(context, i)),
+                  children: List.generate(
+                      movies.length, (i) => buildItemDotView(context, i)),
                 ),
               ),
             ),

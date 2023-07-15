@@ -41,8 +41,11 @@ class PlayerController extends GetxController {
       if (file.key.length > 3) {
         final _s = file.key.substring(0, 3);
         final _e = file.key.substring(3, 6);
-        final _se = _subtitles.where((e) => e.s.toLowerCase() == _s.toLowerCase()).toList();
-        final _ep = _se.where((e) => e.e.toLowerCase() == _e.toLowerCase()).toList();
+        final _se = _subtitles
+            .where((e) => e.s.toLowerCase() == _s.toLowerCase())
+            .toList();
+        final _ep =
+            _se.where((e) => e.e.toLowerCase() == _e.toLowerCase()).toList();
         return _ep;
       } else {
         return [];
@@ -103,14 +106,16 @@ class PlayerController extends GetxController {
   }
 
   Future loadSubtitle(String k, String l) async {
-    _gettingSubtitle = true;
-    _currentL = l;
-    update();
-    final _source = await Services().getSubtitleSource(k);
-    _captions = Services().captionDecode(_source);
-    _gettingSubtitle = false;
-    update();
-    videoPlayerController?.addListener(_captionListener);
+    if (!offline) {
+      _gettingSubtitle = true;
+      _currentL = l;
+      update();
+      final _source = await Services().getSubtitleSource(k);
+      _captions = Services().captionDecode(_source);
+      _gettingSubtitle = false;
+      update();
+      videoPlayerController?.addListener(_captionListener);
+    }
   }
 
   void _captionListener() {
@@ -199,11 +204,17 @@ class PlayerController extends GetxController {
     if (videoPlayerController!.value.isBuffering) {
       popHideControls();
     }
+    if (videoPlayerController!.value.position ==
+        videoPlayerController!.value.duration) {
+      Get.back();
+    }
   }
 
   Future _getSubtitle() async {
-    _subtitles = await Services().getSubtitles(subUrl);
-    update();
+    if (!offline) {
+      _subtitles = await Services().getSubtitles(subUrl);
+      update();
+    }
   }
 
   @override

@@ -25,7 +25,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin {
   late SharedPreferences _db;
 
   _init() async {
@@ -48,7 +49,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
         List<Map<String, dynamic>> listData = [];
 
         if (c.data.isNotEmpty) {
-          popular =  c.data.sublist(0, 1).first;
+          popular = c.data.sublist(0, 1).first;
           listData = c.data.sublist(1, c.data.length).toList();
         }
 
@@ -67,7 +68,8 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
               ],
               body: SingleChildScrollView(
                 physics: const NeverScrollableScrollPhysics(),
-                padding: EdgeInsets.symmetric(vertical: isMobile ? 12.sp : 7.sp),
+                padding:
+                    EdgeInsets.symmetric(vertical: isMobile ? 12.sp : 7.sp),
                 child: Column(
                   children: [
                     TopSliderWidget(

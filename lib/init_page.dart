@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vip/login_page.dart';
 import 'package:vip/models/cache_key_model.dart';
 import 'package:vip/models/user_model.dart';
-import 'package:vip/my_videos_page.dart';
+import 'package:vip/cover_app_pages/home.dart';
 import 'package:vip/pages/bottom_nav.dart';
 import 'package:vip/services/services.dart';
 import 'package:vip/utils/custom_page_transition.dart';
@@ -25,6 +25,7 @@ class _InitPageState extends State<InitPage> {
     if (data != null) {
       UserModel user = UserModel.fromMap(json.decode(data));
       bool isExpired = DateTime.parse(user.expireIn).checkExpireDate();
+      token = user.accessToken;
 
       if (await Services().canShowMovie) {
         if (isExpired) {
@@ -36,7 +37,6 @@ class _InitPageState extends State<InitPage> {
             );
           }
         } else {
-          token = user.accessToken;
           if (mounted) {
             Navigator.of(context).pushReplacement(
               MyPageRoute(
@@ -49,7 +49,7 @@ class _InitPageState extends State<InitPage> {
         if (mounted) {
           Navigator.of(context).pushReplacement(
             MyPageRoute(
-              builder: (_) => const MyVideosPage(),
+              builder: (_) => const CoverHomePage(),
             ),
           );
         }
@@ -58,7 +58,7 @@ class _InitPageState extends State<InitPage> {
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MyPageRoute(
-            builder: (_) => const AuthPage(),
+            builder: (_) => const CoverHomePage(),
           ),
         );
       }

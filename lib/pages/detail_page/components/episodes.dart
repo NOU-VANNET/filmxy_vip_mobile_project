@@ -85,6 +85,7 @@ class _EpisodesWidgetState extends State<EpisodesWidget>
         "alpha",
         "beta",
         "premium",
+        "cosmos",
       ];
 
   void getSeason({List<FileLink>? files}) {

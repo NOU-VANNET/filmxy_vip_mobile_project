@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vip/my_videos_page.dart';
+import 'package:vip/cover_app_pages/home.dart';
 import 'package:vip/models/cache_key_model.dart';
 import 'package:vip/models/user_model.dart';
 import 'package:vip/pages/bottom_nav.dart';
@@ -141,8 +141,9 @@ class _AuthPageState extends State<AuthPage> {
                             if (email.isNotEmpty && pw.isNotEmpty) {
                               loginEditor.text = email;
                               passwordEditor.text = pw;
-                              setState((){});
-                              await Future.delayed(const Duration(milliseconds: 100));
+                              setState(() {});
+                              await Future.delayed(
+                                  const Duration(milliseconds: 100));
                               login();
                             }
                           },
@@ -220,8 +221,7 @@ class _AuthPageState extends State<AuthPage> {
       );
 
       var db = await SharedPreferences.getInstance();
-      await db.setString(
-          CacheKeyModel.userModelKey, json.encode(user.toMap()));
+      await db.setString(CacheKeyModel.userModelKey, json.encode(user.toMap()));
 
       token = user.accessToken;
 
@@ -231,14 +231,14 @@ class _AuthPageState extends State<AuthPage> {
         Navigator.of(context).pushAndRemoveUntil(
           MyPageRoute(
             builder: (_) =>
-            canShowMovie ? const BottomNavPage() : const MyVideosPage(),
+                canShowMovie ? const BottomNavPage() : const CoverHomePage(),
           ),
-              (route) => false,
+          (route) => false,
         );
       }
     } else {
       setState(() => isLogging = false);
-      Utils().showToast(result["message"]);
+      Utils().showToast(Utils.stripHtmlIfNeeded(result["message"]));
     }
   }
 }

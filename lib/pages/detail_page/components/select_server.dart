@@ -37,6 +37,7 @@ class SelectServerWidget extends StatelessWidget {
       : super(key: key);
 
   final List<String> _resolution = [
+    "4k",
     "1080p",
     "720p",
     "480p",

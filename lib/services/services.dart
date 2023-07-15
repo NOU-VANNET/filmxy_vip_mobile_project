@@ -285,7 +285,8 @@ class Services implements Repository {
     }
   }
 
-  Future<Map<String, dynamic>> serverRegister(String username, String email, String password, String inviteCode) async {
+  Future<Map<String, dynamic>> serverRegister(
+      String username, String email, String password, String inviteCode) async {
     try {
       Map<String, dynamic> body = {
         "username": username,

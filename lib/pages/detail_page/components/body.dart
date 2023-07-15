@@ -135,8 +135,14 @@ class _DetailBodyState extends State<DetailBody> {
                                           if (!isMatched) {
                                             download();
                                           } else {
-                                            Get.put(DownloadController()).loadTask();
-                                            Navigator.of(context).push(MyPageRoute(builder: (context) => const DownloadPage(),),);
+                                            Get.put(DownloadController())
+                                                .loadTask();
+                                            Navigator.of(context).push(
+                                              MyPageRoute(
+                                                builder: (context) =>
+                                                    const DownloadPage(),
+                                              ),
+                                            );
                                           }
                                         },
                                         style: ElevatedButton.styleFrom(
@@ -233,7 +239,12 @@ class _DetailBodyState extends State<DetailBody> {
                                       download();
                                     } else {
                                       Get.put(DownloadController()).loadTask();
-                                      Navigator.of(context).push(MyPageRoute(builder: (context) => const DownloadPage(),),);
+                                      Navigator.of(context).push(
+                                        MyPageRoute(
+                                          builder: (context) =>
+                                              const DownloadPage(),
+                                        ),
+                                      );
                                     }
                                   },
                                 ),
@@ -352,8 +363,8 @@ class _DetailBodyState extends State<DetailBody> {
                         if (widget.movie.schedulePost?['time'] != null &&
                             widget.movie.status.toLowerCase() == "ongoing")
                           CountDownEpisodeWidget(
-                            dateTime:
-                                DateTime.parse(widget.movie.schedulePost!['time']),
+                            dateTime: DateTime.parse(
+                                widget.movie.schedulePost!['time']),
                             comingEpisode: widget.movie.schedulePost?['text'],
                             movie: widget.movie,
                           ),
@@ -569,6 +580,7 @@ class _DetailBodyState extends State<DetailBody> {
     "premium",
     "alpha",
     "beta",
+    "cosmos",
   ];
 
   void play() {

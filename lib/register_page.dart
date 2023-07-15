@@ -148,7 +148,7 @@ class _RegisterPageState extends State<RegisterPage> {
       if (mounted) Navigator.of(context).pop();
     } else {
       setState(() => isRegistering = false);
-      Utils().showToast(result["message"]);
+      Utils().showToast(Utils.stripHtmlIfNeeded(result["message"]));
     }
   }
 }

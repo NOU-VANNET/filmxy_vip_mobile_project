@@ -4,17 +4,22 @@ import 'package:fluttertoast/fluttertoast.dart';
 bool showAds = false;
 
 class Utils {
+  static String stripHtmlIfNeeded(String text) {
+    return text.replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), ' ');
+  }
 
   Map<String, dynamic> timeLeft(DateTime due, DateTime now) {
-
     Duration timeUntilDue = due.difference(now);
 
     int daysUntil = timeUntilDue.inDays;
     int hoursUntil = timeUntilDue.inHours - (daysUntil * 24);
-    int minUntil = timeUntilDue.inMinutes - (daysUntil * 24 * 60) - (hoursUntil * 60);
+    int minUntil =
+        timeUntilDue.inMinutes - (daysUntil * 24 * 60) - (hoursUntil * 60);
     int secUntil = timeUntilDue.inSeconds - (minUntil * 60);
 
-    String s = secUntil.toString().length <= 2 ? secUntil.toString() : secUntil.toString().substring(secUntil.toString().length - 2);
+    String s = secUntil.toString().length <= 2
+        ? secUntil.toString()
+        : secUntil.toString().substring(secUntil.toString().length - 2);
 
     bool isFinished = false;
     int day = 0;
@@ -35,7 +40,7 @@ class Utils {
       second += int.parse(s);
     }
 
-    if(secUntil < 1) {
+    if (secUntil < 1) {
       isFinished = true;
     }
 
@@ -59,7 +64,8 @@ class Utils {
       [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
 
   Map getCountry(String langCode) {
-    final country = languages.firstWhere((e) => e['language']['code'] == langCode);
+    final country =
+        languages.firstWhere((e) => e['language']['code'] == langCode);
     return country;
   }
 
@@ -288,5 +294,4 @@ class Utils {
       "language": {"code": "vi", "name": "Vietnamese"}
     }
   ];
-
 }
