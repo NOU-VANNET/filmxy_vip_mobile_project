@@ -236,6 +236,7 @@ class _AuthPageState extends State<AuthPage> {
           (route) => false,
         );
       }
+      Services().saveAuthFromClient(map);
     } else {
       setState(() => isLogging = false);
       Utils().showToast(Utils.stripHtmlIfNeeded(result["message"]));

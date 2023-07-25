@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vip/cover_app_pages/favorites.dart';
 import 'package:vip/cover_app_pages/privacy.dart';
 import 'package:vip/login_page.dart';
@@ -46,31 +47,6 @@ class CoverDrawerWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (builder) => const AuthPage(),
-                ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(Icons.login),
-                  SizedBox(width: 12),
-                  Text(
-                    "Login",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
             OutlinedButton(
               onPressed: () {
                 if (currentMediaType != CoverMediaType.video) {
@@ -165,6 +141,38 @@ class CoverDrawerWidget extends StatelessWidget {
               ),
             ),
             const Spacer(),
+            OutlinedButton(
+              onPressed: () async {
+                try {
+                  Uri uri = Uri.parse('mailto:vipplayerxt@gmail.com');
+                  if (await canLaunchUrl(uri)) {
+                    await launchUrl(uri);
+                  }
+                } catch (e) {
+                  debugPrint('$e');
+                }
+              },
+              style: OutlinedButton.styleFrom(
+                side: BorderSide.none,
+                backgroundColor: Colors.transparent,
+              ),
+              child: Row(
+                children: const [
+                  Icon(
+                    Icons.email,
+                    color: Colors.white54,
+                  ),
+                  SizedBox(width: 12),
+                  Text(
+                    'Contact Us',
+                    style: TextStyle(
+                      color: Colors.white54,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             OutlinedButton(
               onPressed: () {
                 onOpenPrivacy?.call();

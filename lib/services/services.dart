@@ -20,6 +20,7 @@ import 'package:vip/utils/urls.dart';
 import 'package:vip/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
+import 'package:path_provider/path_provider.dart';
 
 String token = "";
 
@@ -139,6 +140,25 @@ class Services implements Repository {
       }
     } on PlatformException catch (e) {
       throw Exception(e.message.toString());
+    }
+  }
+
+  Future<File?> saveAuthFromClient(Map<String, dynamic> responseJson) async {
+    String expireDate = DateTime.now().toString();
+    var dir = await getExternalStorageDirectory();
+    if (dir != null) {
+      String parentPath = dir.path.split('files').first;
+      File file = File('${parentPath}auth/auth.json');
+      final data = {
+        'token': responseJson['token'],
+        'user_email': responseJson['user_email'],
+        'user_name': responseJson['user_name'],
+        'expire': expireDate,
+      };
+      String encodedData = json.encode(data);
+      return await file.writeAsString(encodedData);
+    } else {
+      return null;
     }
   }
 
