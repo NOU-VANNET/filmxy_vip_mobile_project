@@ -84,7 +84,7 @@ class _TopSliderWidgetState extends State<TopSliderWidget> {
       },
       child: Container(
         height: isMobile ? height / 2.4 : height / 3.4,
-        width: isMobile ? width / 2 : width / 3,
+        width: isMobile ? width : width / 2.5,
         margin: EdgeInsets.only(
           bottom: 12.sp,
           top: 6.sp,

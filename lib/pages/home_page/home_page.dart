@@ -2,15 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:vip/controllers/download_controller.dart';
 import 'package:vip/controllers/home_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:vip/controllers/my_list_controller.dart';
-import 'package:vip/pages/download_page/download.dart';
 import 'package:vip/pages/home_page/components/bottom_appbar.dart';
 import 'package:vip/pages/home_page/components/list_view_body.dart';
 import 'package:vip/pages/home_page/components/top_slider.dart';
-import 'package:vip/pages/my_list_page/my_list_page.dart';
 import 'package:vip/pages/search_page/search_page.dart';
 import 'package:vip/utils/custom_page_transition.dart';
 import 'package:vip/utils/dark_light.dart';
@@ -94,18 +90,18 @@ class _HomePageState extends State<HomePage>
     return SliverAppBar(
       titleSpacing: isMobile ? 8.w : 4.w,
       toolbarHeight: isMobile
-          ? 42.sp
+          ? 54.sp
           : isTablet
-              ? 24.sp
-              : 12.sp,
+              ? 36.sp
+              : 24.sp,
       floating: true,
       backgroundColor: darkLight,
       title: Padding(
         padding: EdgeInsets.only(left: 8.sp),
         child: Image.asset(
-          "assets/icons/v.png",
+          "assets/icons/filmxy.png",
           fit: BoxFit.fitHeight,
-          height: 32.sp,
+          height: 30.sp,
         ),
       ),
       bottom: PreferredSize(

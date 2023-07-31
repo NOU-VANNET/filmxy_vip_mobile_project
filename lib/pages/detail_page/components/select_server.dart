@@ -9,7 +9,7 @@ import 'package:vip/pages/player_page/player_page.dart';
 import 'package:vip/services/services.dart';
 import 'package:vip/utils/custom_page_transition.dart';
 import 'package:vip/utils/size.dart';
-import 'package:pod_player/pod_player.dart';
+import 'package:video_player/video_player.dart';
 
 class SelectServerWidget extends StatelessWidget {
   final List<FileLink> files;
@@ -20,7 +20,7 @@ class SelectServerWidget extends StatelessWidget {
   final bool download;
   final void Function()? onDownloadStart;
   final num postId;
-  final PodPlayerController? ytCtrl;
+  final VideoPlayerController? ytCtrl;
   final BuildContext ctx;
   SelectServerWidget(
       {Key? key,

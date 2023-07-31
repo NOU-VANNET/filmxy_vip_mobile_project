@@ -9,7 +9,6 @@ import 'package:vip/models/detail_model.dart';
 import 'package:vip/models/subtitle_model.dart';
 import 'package:vip/services/services.dart';
 import 'package:vip/utils/utils.dart';
-import 'package:pod_player/pod_player.dart' as pod;
 import 'package:video_player/video_player.dart';
 
 class PlayerController extends GetxController {
@@ -18,7 +17,7 @@ class PlayerController extends GetxController {
   final String type;
   final bool offline;
   final String directory;
-  final pod.PodPlayerController? ytCtrl;
+  final VideoPlayerController? ytCtrl;
   PlayerController({
     required this.file,
     required this.subUrl,
@@ -182,7 +181,7 @@ class PlayerController extends GetxController {
       if (_dLink != null) {
         _dlLink = _dLink;
         ytCtrl?.pause();
-        videoPlayerController = VideoPlayerController.network(_dlLink)
+        videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(_dlLink))
           ..initialize().then((_) {
             if (videoPlayerController!.value.isInitialized) {
               ytCtrl?.pause();
@@ -228,7 +227,7 @@ class PlayerController extends GetxController {
     initialize();
     _getSubtitle();
     if (ytCtrl != null) {
-      if (ytCtrl!.isInitialised || ytCtrl!.isVideoPlaying) {
+      if (ytCtrl!.value.isInitialized || ytCtrl!.value.isPlaying) {
         ytCtrl?.pause();
       }
     }

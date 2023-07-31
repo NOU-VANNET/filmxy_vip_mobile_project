@@ -6,7 +6,7 @@ import 'package:vip/pages/detail_page/detail_page.dart';
 import 'package:vip/utils/custom_page_transition.dart';
 import 'package:vip/utils/size.dart';
 import 'package:vip/widgets/poster_widget.dart';
-import 'package:pod_player/pod_player.dart';
+import 'package:video_player/video_player.dart';
 
 class HorizontalListViewWidget extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -71,7 +71,7 @@ class GridViewPostWidget extends StatelessWidget {
   final List<Post> data;
   final String label;
   final num postId;
-  final PodPlayerController? podCtrl;
+  final VideoPlayerController? podCtrl;
   const GridViewPostWidget({
     Key? key,
     required this.data,

@@ -14,7 +14,10 @@ import 'package:vip/services/services.dart';
 import 'package:vip/utils/custom_page_transition.dart';
 import 'package:vip/utils/dark_light.dart';
 import 'package:vip/utils/size.dart';
-import 'package:pod_player/pod_player.dart';
+import 'package:video_player/video_player.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+
+import '../../widgets/trailer_widget.dart';
 
 List<DetailModel> detailList = [];
 
@@ -26,7 +29,7 @@ Future readDetailCache() async {
 class DetailPage extends StatefulWidget {
   final MovieModel movie;
   final bool disableBannerAds;
-  final PodPlayerController? podCtrl;
+  final VideoPlayerController? podCtrl;
   const DetailPage({
     Key? key,
     required this.movie,
@@ -41,7 +44,9 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   DetailModel? detailModel;
 
-  PodPlayerController? ytController;
+  VideoPlayerController? ytController;
+  bool isTrailerError = false;
+  bool isTrailerInitializing = true;
 
   Future getDetail() async {
     detailModel = await getDetailModel(
@@ -59,10 +64,84 @@ class _DetailPageState extends State<DetailPage> {
     }
 
     if (mounted) setState(() {});
-    ytController = PodPlayerController(
-      playVideoFrom: PlayVideoFrom.youtube(detailModel!.trailer),
-    )..initialise();
+    await _initTrailer();
     if (mounted) setState(() {});
+  }
+
+  Future _initTrailer() async {
+    String linkToPlay = '';
+    final videoId = convertYoutubeUrlToId(detailModel!.trailer);
+
+    if (videoId != null) {
+      var yt = YoutubeExplode();
+      final manifest = await yt.videos.streamsClient.getManifest(videoId);
+
+      for (var i in manifest.muxed) {
+        int quality = int.parse(i.qualityLabel.split('p')[0]);
+        if (quality == 720) {
+          linkToPlay = i.url.toString();
+          break;
+        } else if (quality == 480) {
+          linkToPlay = i.url.toString();
+          break;
+        } else if (quality == 360) {
+          linkToPlay = i.url.toString();
+          break;
+        } else if (quality == 240) {
+          linkToPlay = i.url.toString();
+          break;
+        }
+      }
+
+      if (linkToPlay.isNotEmpty) {
+        ytController = VideoPlayerController.networkUrl(Uri.parse(linkToPlay))
+          ..initialize().then((_) async {
+            ytController?.addListener(_ytPlayerListener);
+            if (ytController!.value.isInitialized) {
+              await ytController?.play();
+              if (mounted) setState(() {});
+            }
+          });
+      } else {
+        isTrailerError = true;
+      }
+    } else {
+      isTrailerError = true;
+    }
+
+    isTrailerInitializing = false;
+
+    if (mounted) setState(() {});
+  }
+
+  void _ytPlayerListener() {
+    if (ytController!.value.hasError) {
+      isTrailerError = true;
+      setState(() {});
+    }
+  }
+
+  static String? convertYoutubeUrlToId(String url,
+      {bool trimWhitespaces = true}) {
+    if (!url.contains("http") && (url.length == 11)) return url;
+    if (trimWhitespaces) url = url.trim();
+
+    for (var exp in [
+      RegExp(
+          r"^https:\/\/(?:www\.|m\.)?youtube\.com\/watch\?v=([_\-a-zA-Z0-9]{11}).*$"),
+      RegExp(
+          r"^https:\/\/(?:music\.)?youtube\.com\/watch\?v=([_\-a-zA-Z0-9]{11}).*$"),
+      RegExp(
+          r"^https:\/\/(?:www\.|m\.)?youtube\.com\/shorts\/([_\-a-zA-Z0-9]{11}).*$"),
+      RegExp(
+          r"^https:\/\/(?:www\.|m\.)?youtube(?:-nocookie)?\.com\/embed\/([_\-a-zA-Z0-9]{11}).*$"),
+      RegExp(r"^https:\/\/youtu\.be\/([_\-a-zA-Z0-9]{11}).*$")
+    ]) {
+      Match? match = exp.firstMatch(url);
+      if (match != null && match.groupCount >= 1) return match.group(1);
+    }
+
+    return null;
   }
 
   Future<DetailModel> getDetailModel(
@@ -100,8 +179,8 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   void dispose() {
-    if (ytController != null) ytController?.dispose();
-    if (widget.podCtrl != null) widget.podCtrl?.play();
+    ytController?.dispose();
+    widget.podCtrl?.play();
     super.dispose();
   }
 
@@ -148,14 +227,6 @@ class _DetailPageState extends State<DetailPage> {
               ),
               SizedBox(width: 5.w),
             ],
-            bottom: isMobile
-                ? PreferredSize(
-                    preferredSize: Size.fromHeight(210.sp),
-                    child: ytController != null
-                        ? buildPodPlayer()
-                        : Container(color: darkLight),
-                  )
-                : null,
           ),
           body: detailModel != null
               ? DetailBody(
@@ -163,6 +234,10 @@ class _DetailPageState extends State<DetailPage> {
                   ytCtrl: ytController,
                   movie: widget.movie,
                   dlCtrl: dl,
+                  trailerPlayer: Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: trailerPlayer(),
+                  ),
                 )
               : const Center(
                   child: CircularProgressIndicator(color: Colors.green)),
@@ -171,37 +246,33 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  Widget buildPodPlayer() => PodVideoPlayer(
-        controller: ytController!,
-        onVideoError: () => buildBannerImage,
-        onLoading: (context) => Center(
-          child: SizedBox(
-            height: 50.sp,
-            width: 50.sp,
-            child: const CircularProgressIndicator(
-              color: Colors.white,
-              strokeWidth: 2.5,
-            ),
-          ),
-        ),
-        videoThumbnail: DecorationImage(
-          image: CachedNetworkImageProvider(
-            detailModel!.banner,
-            cacheKey: "${widget.movie.postId}cover",
-          ),
+  Widget get thumbnailChild => CachedNetworkImage(
+        imageUrl: detailModel!.banner,
+        cacheKey: "${widget.movie.postId}cover",
+        fit: BoxFit.cover,
+        fadeInDuration: const Duration(milliseconds: 100),
+        fadeOutDuration: const Duration(milliseconds: 100),
+        placeholder: (context, _) => const AspectRatio(
+          aspectRatio: 16 / 9,
+          child: SizedBox(),
         ),
       );
 
-  Widget get buildBannerImage => CachedNetworkImage(
-        imageUrl: detailModel!.banner,
-        fit: BoxFit.cover,
-        cacheKey: "${widget.movie.postId}cover",
-        width: width,
-        fadeOutDuration: const Duration(milliseconds: 200),
-        fadeInDuration: const Duration(milliseconds: 200),
-        placeholder: (context, holder) => SizedBox(
-          height: 210.sp,
-          width: width,
-        ),
-      );
+  Widget trailerPlayer() {
+    if (isTrailerError || isTrailerInitializing) {
+      return thumbnailChild;
+    } else {
+      if (ytController != null || ytController!.value.isInitialized) {
+        return AspectRatio(
+          aspectRatio: 16 / 9,
+          child: TrailerPlayerWidget(
+            controller: ytController!,
+            thumbnail: thumbnailChild,
+          ),
+        );
+      } else {
+        return thumbnailChild;
+      }
+    }
+  }
 }

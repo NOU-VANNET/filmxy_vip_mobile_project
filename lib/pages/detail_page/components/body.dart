@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get/get.dart';
@@ -16,20 +15,22 @@ import 'package:vip/utils/dark_light.dart';
 import 'package:vip/utils/size.dart';
 import 'package:vip/widgets/countdown_episode.dart';
 import 'package:vip/widgets/horizontal_list_widget.dart';
-import 'package:pod_player/pod_player.dart';
+import 'package:video_player/video_player.dart';
 import 'package:readmore/readmore.dart';
 
 class DetailBody extends StatefulWidget {
   final DetailModel detail;
   final MovieModel movie;
-  final PodPlayerController? ytCtrl;
+  final VideoPlayerController? ytCtrl;
   final DownloadController dlCtrl;
+  final Widget trailerPlayer;
   const DetailBody({
     Key? key,
     required this.detail,
     this.ytCtrl,
     required this.movie,
     required this.dlCtrl,
+    this.trailerPlayer = const SizedBox(),
   }) : super(key: key);
 
   @override
@@ -85,16 +86,13 @@ class _DetailBodyState extends State<DetailBody> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(height: isMobile ? 10.h : 4.h),
+                  widget.trailerPlayer,
                   if (isTablet || isDesktop)
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 2.sp),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(
-                            height: isDesktop ? 120.sp : 140.sp,
-                            child: buildPodPlayer(),
-                          ),
                           Expanded(
                             child: SizedBox(
                               height: isDesktop ? 120.sp : 140.sp,
@@ -408,7 +406,7 @@ class _DetailBodyState extends State<DetailBody> {
                         ),
                         SizedBox(
                           height: isMobile
-                              ? (height - 335.sp).clamp(200, 1000)
+                              ? (height - 210).clamp(200, 1000)
                               : height / 1.5,
                           child: TabBarView(
                             physics: const NeverScrollableScrollPhysics(),
@@ -502,43 +500,6 @@ class _DetailBodyState extends State<DetailBody> {
       );
     }
   }
-
-  Widget buildPodPlayer() => PodVideoPlayer(
-        controller: widget.ytCtrl!,
-        onVideoError: () => buildBannerImage,
-        onLoading: (context) => Center(
-          child: SizedBox(
-            height: 50.sp,
-            width: 50.sp,
-            child: const CircularProgressIndicator(
-              color: Colors.white,
-              strokeWidth: 2.5,
-            ),
-          ),
-        ),
-        videoThumbnail: DecorationImage(
-          image: CachedNetworkImageProvider(
-            widget.detail.banner,
-            cacheKey: "${widget.movie.postId}cover",
-          ),
-        ),
-      );
-
-  Widget get buildBannerImage => AspectRatio(
-        aspectRatio: 16 / 9,
-        child: CachedNetworkImage(
-          imageUrl: widget.detail.banner,
-          fit: BoxFit.cover,
-          cacheKey: "${widget.movie.postId}cover",
-          width: width,
-          fadeOutDuration: const Duration(milliseconds: 200),
-          fadeInDuration: const Duration(milliseconds: 200),
-          placeholder: (context, holder) => SizedBox(
-            height: 210.sp,
-            width: width,
-          ),
-        ),
-      );
 
   Widget buildButton(
     BuildContext context, {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:vip/pages/discover_page/tab_bar_view_data.dart';
 import 'package:vip/pages/my_list_page/my_list_page.dart';
 import 'package:vip/utils/custom_page_transition.dart';
@@ -23,12 +22,12 @@ class BottomAppBarHome extends StatelessWidget {
       padding: EdgeInsets.only(bottom: isMobile ? 8.h : 2.h),
       child: SizedBox(
         height: isMobile
-            ? 32.sp
+            ? 48.sp
             : isTablet
                 ? 15.sp
                 : 10.sp,
         child: SingleChildScrollView(
-          padding: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           physics: const AlwaysScrollableScrollPhysics(),
           scrollDirection: Axis.horizontal,
           child: Row(
@@ -82,11 +81,20 @@ class BottomAppBarHome extends StatelessWidget {
         tag: label,
         child: Container(
           alignment: Alignment.center,
+          height: 32.sp,
           margin: EdgeInsets.symmetric(horizontal: 4.sp),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             color: darkMode ? Colors.grey[800] : Colors.grey[300],
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black38,
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: Offset(0, 3),
+              ),
+            ],
           ),
           child: Text(
             label,

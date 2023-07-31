@@ -14,7 +14,7 @@ import 'package:vip/utils/custom_page_transition.dart';
 import 'package:vip/utils/dark_light.dart';
 import 'package:vip/utils/size.dart';
 import 'package:vip/utils/utils.dart';
-import 'package:pod_player/pod_player.dart';
+import 'package:video_player/video_player.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class EpisodesWidget extends StatefulWidget {
@@ -26,7 +26,7 @@ class EpisodesWidget extends StatefulWidget {
   final String status;
   final String detailLink;
   final String postTitle;
-  final PodPlayerController? ytCtrl;
+  final VideoPlayerController? ytCtrl;
   final DownloadController dlCtrl;
   const EpisodesWidget({
     Key? key,

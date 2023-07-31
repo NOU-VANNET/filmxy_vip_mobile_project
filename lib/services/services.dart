@@ -65,8 +65,7 @@ class Services implements Repository {
   }
 
   Future<bool> get canShowMovie async {
-    var res = await get(Uri.parse(Urls.apiDomain(route: 'homepage')),
-        headers: header);
+    var res = await get(Uri.parse(Urls.apiDomain(route: 'homepage')), headers: header);
     return res.statusCode == 200;
   }
 
@@ -143,23 +142,18 @@ class Services implements Repository {
     }
   }
 
-  Future<File?> saveAuthFromClient(Map<String, dynamic> responseJson) async {
+  Future<File> saveAuthFromClient(Map<String, dynamic> responseJson) async {
     String expireDate = DateTime.now().toString();
-    var dir = await getExternalStorageDirectory();
-    if (dir != null) {
-      String parentPath = dir.path.split('files').first;
-      File file = File('${parentPath}auth/auth.json');
-      final data = {
-        'token': responseJson['token'],
-        'user_email': responseJson['user_email'],
-        'user_name': responseJson['user_name'],
-        'expire': expireDate,
-      };
-      String encodedData = json.encode(data);
-      return await file.writeAsString(encodedData);
-    } else {
-      return null;
-    }
+    var dir = await getApplicationDocumentsDirectory();
+    File file = File('${dir.path}/auth/auth.json');
+    final data = {
+      'token': responseJson['token'],
+      'user_email': responseJson['user_email'],
+      'user_name': responseJson['user_name'],
+      'expire': expireDate,
+    };
+    String encodedData = json.encode(data);
+    return await file.writeAsString(encodedData);
   }
 
   @override
@@ -301,7 +295,7 @@ class Services implements Repository {
     if (response.statusCode == 200) {
       return await compute(movieModelFromMap, response.body);
     } else {
-      return [];
+      throw Exception("Error! Status: ${response.statusCode}");
     }
   }
 

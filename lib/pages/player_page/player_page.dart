@@ -6,7 +6,6 @@ import 'package:vip/models/detail_model.dart';
 import 'package:vip/pages/player_page/components/progress_indicator.dart';
 import 'package:vip/pages/player_page/components/subtitles.dart';
 import 'package:vip/utils/size.dart';
-import 'package:pod_player/pod_player.dart' as pod;
 import 'package:video_player/video_player.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -16,7 +15,7 @@ class PlayerPage extends StatefulWidget {
   final String type;
   final bool offline;
   final String? offlineVideoPath;
-  final pod.PodPlayerController? ytCtrl;
+  final VideoPlayerController? ytCtrl;
   final void Function()? onDispose;
   const PlayerPage({
     Key? key,
