@@ -5,31 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9883b20e-042c-4df3-9052-51e85dde7bba" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/filmxy_vip_mobile_project.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/filmxy_vip_mobile_project.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.metadata" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/key.properties" beforeDir="false" afterPath="$PROJECT_DIR$/android/key.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_01.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_02.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/controllers/player_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/controllers/player_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/init_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/init_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/pages/detail_page/components/body.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/detail_page/components/body.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/pages/detail_page/components/episodes.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/detail_page/components/episodes.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/pages/detail_page/components/select_server.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/detail_page/components/select_server.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/pages/detail_page/detail_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/detail_page/detail_page.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/pages/discover_page/tab_bar_view_data.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/discover_page/tab_bar_view_data.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/pages/home_page/components/bottom_appbar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/home_page/components/bottom_appbar.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/pages/home_page/components/top_player.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/pages/home_page/components/top_slider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/home_page/components/top_slider.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/pages/home_page/home_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/home_page/home_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/pages/player_page/components/progress_indicator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/player_page/components/progress_indicator.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/pages/player_page/player_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/player_page/player_page.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/services/services.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/services/services.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/horizontal_list_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/horizontal_list_widget.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

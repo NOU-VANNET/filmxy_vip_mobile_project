@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:vip/controllers/tabs_data_controller.dart';
 import 'package:vip/pages/detail_page/detail_page.dart';
-import 'package:vip/pages/search_page/search_page.dart';
 import 'package:vip/utils/custom_page_transition.dart';
 import 'package:vip/utils/size.dart';
 import 'package:vip/widgets/poster_widget.dart';
@@ -89,6 +88,7 @@ class _TabBarViewDataState extends State<TabBarViewData> {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
+            toolbarHeight: 58,
             iconTheme: IconThemeData(
               color: darkMode ? Colors.white70 : Colors.black,
             ),
@@ -97,7 +97,7 @@ class _TabBarViewDataState extends State<TabBarViewData> {
                       widget.tabsData[currentSelectedIndex]["label"] !=
                           "Playlist"
                   ? SizedBox(
-                      width: 124,
+                      width: 154,
                       child: PopupMenuButton<String>(
                         onSelected: (value) {
                           bool canLoad = true;
@@ -177,11 +177,12 @@ class _TabBarViewDataState extends State<TabBarViewData> {
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(34.sp),
               child: SizedBox(
-                height: 34.sp,
+                height: 40.sp,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   controller: tabController,
                   shrinkWrap: true,
+                  padding: const EdgeInsets.only(bottom: 8),
                   children: List.generate(
                     widget.tabsData.length,
                     (index) => AutoScrollTag(

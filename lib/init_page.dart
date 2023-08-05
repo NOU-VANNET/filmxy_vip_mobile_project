@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vip/login_page.dart';
 import 'package:vip/cover_app_pages/home.dart';
+import 'package:vip/models/app_status_model.dart';
 import 'package:vip/pages/bottom_nav.dart';
 import 'package:vip/services/services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -47,29 +50,60 @@ class _InitPageState extends State<InitPage> {
         });
         Map<String, dynamic> map = json.decode(source);
         token = map['token'].toString();
-        if (await Services().canShowMovie) {
-          if (map.containsKey('expire')) {
-            String expireIn = map['expire'] as String;
-            bool isExpired =
-                DateTime.parse(expireIn).checkExpireDate(number: 10);
-            if (isExpired) {
-              goLogin(isExpired);
+
+        AppStatusModel? appStatus = await Services().getAppStatus;
+
+        if (appStatus != null) {
+          Future go() async {
+            if (appStatus.appDisabled) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                showDialog(
+                  context: context,
+                  barrierColor: Colors.black87,
+                  barrierDismissible: false,
+                  builder: (_) => appDisableDialog,
+                );
+              });
+            } else if (await Services().canShowMovie) {
+              if (map.containsKey('expire')) {
+                String expireIn = map['expire'] as String;
+                bool isExpired = DateTime.parse(expireIn).checkExpireDate(number: 10);
+                if (isExpired) {
+                  goLogin(isExpired);
+                } else {
+                  goHomePage();
+                }
+              } else {
+                if (map['token'] != null) {
+                  await Services().saveAuthFromClient(map);
+                }
+                goHomePage();
+              }
             } else {
-              goHomePage();
+              var parentDir = await getApplicationDocumentsDirectory();
+              File f = File('${parentDir.path}/auth/auth.json');
+              if (await f.exists()) {
+                await f.delete();
+              }
+              goCoverPage();
             }
+          }
+
+          if (await appStatus.isUpdateNow) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              showDialog(
+                context: context,
+                barrierColor: Colors.black87,
+                barrierDismissible: false,
+                builder: (_) => updateNewAppDialog(
+                  appStatus,
+                  callback: () => go(),
+                ),
+              );
+            });
           } else {
-            if (map['token'] != null) {
-              await Services().saveAuthFromClient(map);
-            }
-            goHomePage();
+            go();
           }
-        } else {
-          var parentDir = await getApplicationDocumentsDirectory();
-          File f = File('${parentDir.path}/auth/auth.json');
-          if (await f.exists()) {
-            await f.delete();
-          }
-          goCoverPage();
         }
       }
     } else {
@@ -231,7 +265,7 @@ class _InitPageState extends State<InitPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.grey.shade900,
-        duration: const Duration(seconds: 90),
+        duration: const Duration(seconds: 5),
         content: Text(
           message,
           style: const TextStyle(fontSize: 16, color: Colors.white),
@@ -268,6 +302,109 @@ class _InitPageState extends State<InitPage> {
         ),
       );
     }
+  }
+
+  Widget updateNewAppDialog(AppStatusModel status,
+      {void Function()? callback}) {
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: AlertDialog(
+        title: const Text(
+          "Update",
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.black,
+          ),
+        ),
+        content: const Text(
+          "A new app version is available to update!",
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.black,
+          ),
+        ),
+        actions: [
+          if (!status.appForceUpdate)
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                callback?.call();
+              },
+              child: Text(
+                "May be later",
+                style: TextStyle(
+                  fontSize: 17,
+                  color: Colors.grey.shade800,
+                ),
+              ),
+            ),
+          TextButton(
+            onPressed: () async {
+              var uri = Uri.parse(
+                  "https://play.google.com/store/apps/details?id=com.filmxy.vip");
+              if (await canLaunchUrl(uri)) {
+                launchUrl(uri, mode: LaunchMode.externalApplication);
+              }
+            },
+            child: const Text(
+              "Update now",
+              style: TextStyle(
+                fontSize: 17,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget get appDisableDialog {
+    return WillPopScope(
+      onWillPop: () => Future.value(false),
+      child: AlertDialog(
+        title: const Text(
+          "Sorry!",
+          style: TextStyle(
+            color: Colors.red,
+            fontSize: 18,
+          ),
+        ),
+        content: RichText(
+          text: TextSpan(
+            text:
+                "The app has been disabled, Please visit our official website ",
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+            ),
+            children: [
+              TextSpan(
+                text: "Filmxy.vip ",
+                style: const TextStyle(
+                  color: Colors.blue,
+                  fontSize: 17,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () async {
+                    var uri = Uri.parse("https://filmxy.vip");
+                    if (await canLaunchUrl(uri)) {
+                      launchUrl(uri, mode: LaunchMode.externalApplication);
+                    }
+                  },
+              ),
+              const TextSpan(
+                text: "for new app.",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override

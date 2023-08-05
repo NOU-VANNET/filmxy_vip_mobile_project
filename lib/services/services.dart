@@ -5,9 +5,11 @@ import 'package:external_path/external_path.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart' as get_x;
 import 'package:get/get_connect/http/src/status/http_status.dart';
 import 'package:vip/controllers/download_controller.dart';
+import 'package:vip/models/app_status_model.dart';
 import 'package:vip/models/cache_key_model.dart';
 import 'package:vip/models/caption_model.dart';
 import 'package:vip/models/detail_model.dart';
@@ -25,24 +27,20 @@ import 'package:path_provider/path_provider.dart';
 String token = "";
 
 class Services implements Repository {
-  Map<String, String>? get header => {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-        'X-APP-KEY':
-            'vTBsD91mUHpnkE4l5Fy5sJxn0nHBYNrz3tvQlDEwUwvgTk2BhBznSOUwT8M7ZYN7',
-        'X-APP-SECRET':
-            '*07CS23ZtCye16pAacInyA#ONqvYWpmulOUrsm%A\$dQzme3^qAmiX0fjQ0v#SE3g',
-      };
-
-  Map<String, String>? get _xHeader => {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-APP-KEY':
-            'vTBsD91mUHpnkE4l5Fy5sJxn0nHBYNrz3tvQlDEwUwvgTk2BhBznSOUwT8M7ZYN7',
-        'X-APP-SECRET':
-            '*07CS23ZtCye16pAacInyA#ONqvYWpmulOUrsm%A\$dQzme3^qAmiX0fjQ0v#SE3g',
-      };
+  Map<String, String> get headers {
+    var head = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-APP-KEY':
+          'vTBsD91mUHpnkE4l5Fy5sJxn0nHBYNrz3tvQlDEwUwvgTk2BhBznSOUwT8M7ZYN7',
+      'X-APP-SECRET':
+          '*07CS23ZtCye16pAacInyA#ONqvYWpmulOUrsm%A\$dQzme3^qAmiX0fjQ0v#SE3g',
+    };
+    if (token.isNotEmpty) {
+      head['Authorization'] = 'Bearer $token';
+    }
+    return head;
+  }
 
   @override
   Future<List<MovieModel>> fetchData(String type,
@@ -53,7 +51,7 @@ class Services implements Repository {
               '$type${(page != null) ? "/page/$page" : ""}${(filterType != null) ? "?$filterType=true" : ""}'));
       Response response = await get(
         uri,
-        headers: header,
+        headers: headers,
       );
       if (response.statusCode == 200) {
         return await compute(movieModelFromMap, response.body);
@@ -64,15 +62,36 @@ class Services implements Repository {
     }
   }
 
+  Future<AppStatusModel?> get getAppStatus async {
+    try {
+      var res = await post(
+        Uri.parse(
+          Urls.apiDomain(route: 'status'),
+        ),
+        headers: headers,
+      );
+      if (res.statusCode == 200) {
+        final jsonObject = json.decode(res.body) as Map<String, dynamic>;
+        return AppStatusModel.fromMap(jsonObject);
+      } else {
+        return null;
+      }
+    } on PlatformException catch (_) {
+      Utils().showToast("Error while getting app status! Please try again.");
+      return null;
+    }
+  }
+
   Future<bool> get canShowMovie async {
-    var res = await get(Uri.parse(Urls.apiDomain(route: 'homepage')), headers: header);
+    var res = await get(Uri.parse(Urls.apiDomain(route: 'homepage')),
+        headers: headers);
     return res.statusCode == 200;
   }
 
   @override
   Future<List<GenreTypeModel>> getGenreType(String url) async {
     try {
-      Response response = await get(Uri.parse(url), headers: header);
+      Response response = await get(Uri.parse(url), headers: headers);
       if (response.statusCode == HttpStatus.ok) {
         return await compute(genreTypeModelFromMap, response.body);
       } else {
@@ -87,7 +106,7 @@ class Services implements Repository {
   @override
   Future<DetailModel> getDetailModel(String link) async {
     try {
-      Response response = await get(Uri.parse(link), headers: header);
+      Response response = await get(Uri.parse(link), headers: headers);
       if (response.statusCode == HttpStatus.ok) {
         return await compute(detailModelFromMap, response.body);
       } else {
@@ -105,7 +124,7 @@ class Services implements Repository {
       final url = Uri.parse(Urls.apiDomain(route: "search"));
       Response response = await post(
         url,
-        headers: header,
+        headers: headers,
         body: jsonEncode({"query": query, "type": "all"}),
       );
       if (response.statusCode == HttpStatus.ok) {
@@ -124,7 +143,7 @@ class Services implements Repository {
       final url = Uri.parse(Urls.apiDomain(route: "directlink"));
       Response response = await post(
         url,
-        headers: header,
+        headers: headers,
         body: jsonEncode(
           {
             "link_ids": [linkId]
@@ -291,7 +310,7 @@ class Services implements Repository {
 
   @override
   Future<List<MovieModel>> getMoviesTypeList(String url) async {
-    Response response = await get(Uri.parse(url), headers: header);
+    Response response = await get(Uri.parse(url), headers: headers);
     if (response.statusCode == 200) {
       return await compute(movieModelFromMap, response.body);
     } else {
@@ -314,7 +333,7 @@ class Services implements Repository {
         Uri.parse(
           Urls.apiDomain(route: 'register'),
         ),
-        headers: _xHeader,
+        headers: headers,
         body: jsonEncode(body),
       );
       if (res.statusCode == 200) {
@@ -342,7 +361,7 @@ class Services implements Repository {
       Response response = await post(
         Uri.parse(Urls.apiDomain(route: "login")),
         body: jsonEncode(body),
-        headers: _xHeader,
+        headers: headers,
       );
       if (response.statusCode == 200) {
         return {
