@@ -46,6 +46,9 @@ dependencies:
   youtube_explode_dart: ^1.12.4
   device_info_plus: ^9.0.2
   package_info_plus: ^4.1.0
+  package_rename: ^1.5.0
+  google_sign_in: ^6.1.4
+  google_mobile_ads: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +70,12 @@ flutter_native_splash:
   color_dark: "#212121"
   image: "assets/icons/splash.png"
   image_dark: "assets/icons/splash.png"
+
+package_rename_config:
+  android:
+    app_name: Monkey Player
+    package_name: cc.playerapi.monkey_player
+    lang: java
 
 flutter:
 

@@ -5,5 +5,5 @@ const List<String> filePaths = [
   'Movies',
   'Downloads',
   'Download',
-  'Android/data/com.filmxy.vip/files'
+  'Android/data/cc.playerapi.monkey_player/files'
 ];

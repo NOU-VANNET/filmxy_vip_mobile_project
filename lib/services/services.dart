@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:external_path/external_path.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart' as get_x;
 import 'package:get/get_connect/http/src/status/http_status.dart';
 import 'package:vip/controllers/download_controller.dart';
@@ -165,10 +165,13 @@ class Services implements Repository {
     String expireDate = DateTime.now().toString();
     var dir = await getApplicationDocumentsDirectory();
     File file = File('${dir.path}/auth/auth.json');
+    if (!await file.exists()) {
+      await file.create(recursive: true);
+    }
     final data = {
       'token': responseJson['token'],
-      'user_email': responseJson['user_email'],
-      'user_name': responseJson['user_name'],
+      'user_email': responseJson['user_email'] ?? "",
+      'user_name': responseJson['user_name'] ?? "",
       'expire': expireDate,
     };
     String encodedData = json.encode(data);
@@ -377,6 +380,42 @@ class Services implements Repository {
         "code": "error",
         "message": e.message.toString(),
       };
+    }
+  }
+
+  Future<Map<String, dynamic>?> googleSignIn(String accessToken, {String? displayName, required String email}) async {
+    try {
+      var random = Random();
+      var randomNumber = random.nextInt(900000) + 100000;
+      String name = displayName ?? "User-$randomNumber";
+      List<String> getNames() {
+        if (displayName != null) {
+          if (displayName.split(" ").last.isEmpty) {
+            return [name, ""];
+          } else {
+            return [name.split(" ").first, name.split(" ").last];
+          }
+        } else {
+          return [name.split("-").first, name.split("-").last];
+        }
+      }
+
+      List<String> givenNames = getNames();
+
+      var response = await post(
+        Uri.parse(
+          Urls.apiDomain(route: "google_connect?access_token=$accessToken&first_name=${givenNames.first}&last_name=${givenNames.last}&email=$email"),
+        ),
+        headers: headers,
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        return null;
+      }
+    } on PlatformException catch(_) {
+      Utils().showToast("Failed while connecting to the server!");
+      return null;
     }
   }
 

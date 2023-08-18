@@ -29,8 +29,7 @@ class _InitPageState extends State<InitPage> {
   int androidSdkVersion = 0;
 
   Future initialize() async {
-    bool isManagedExternalStorageGranted =
-        await isManagedStoragePermissionIsGranted;
+    bool isManagedExternalStorageGranted = await isManagedStoragePermissionIsGranted;
     bool isStorageGranted = await isStoragePermissionIsGranted;
     if (isManagedExternalStorageGranted && isStorageGranted) {
       File? authFile = await getAuthFile();
@@ -164,7 +163,8 @@ class _InitPageState extends State<InitPage> {
         });
         Map<String, dynamic> map = json.decode(source) as Map<String, dynamic>;
         if (map['token'] != null) {
-          await Services().saveAuthFromClient(map);
+          await foundedAuthFile.delete();
+          return await Services().saveAuthFromClient(map);
         }
         return foundedAuthFile;
       } else {
@@ -341,7 +341,7 @@ class _InitPageState extends State<InitPage> {
           TextButton(
             onPressed: () async {
               var uri = Uri.parse(
-                  "https://play.google.com/store/apps/details?id=com.filmxy.vip");
+                  "https://play.google.com/store/apps/details?id=cc.playerapi.monkey_player");
               if (await canLaunchUrl(uri)) {
                 launchUrl(uri, mode: LaunchMode.externalApplication);
               }

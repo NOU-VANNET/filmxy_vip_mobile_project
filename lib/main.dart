@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:vip/init_page.dart';
 import 'package:vip/pages/detail_page/detail_page.dart';
+import 'package:vip/services/ad_service.dart';
 import 'package:vip/utils/custom_page_transition.dart';
 import 'package:vip/utils/dark_light.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,6 +27,8 @@ Future<void> main() async {
 
   await FlutterDownloader.initialize(ignoreSsl: true);
 
+  await AdService.initialize(testMode: true);
+
   readDetailCache();
   runApp(const MyApp());
 }
@@ -43,7 +46,7 @@ class MyApp extends StatelessWidget {
         designSize: const Size(360, 767),
         builder: (context, _) {
           return GetMaterialApp(
-            title: 'VIP',
+            title: 'Monkey Player',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               primarySwatch: Colors.red,

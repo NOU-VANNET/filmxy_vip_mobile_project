@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vip/cover_app_pages/home.dart';
 import 'package:vip/models/cache_key_model.dart';
@@ -156,7 +158,39 @@ class _AuthPageState extends State<AuthPage> {
                     ),
                   ),
                 ),
-              )
+              ),
+              const SizedBox(height: 60),
+              Align(
+                alignment: Alignment.center,
+                child: ElevatedButton(
+                  onPressed: () => signInWithGoogle(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[200],
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 2,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(
+                        Icons.g_mobiledata_rounded,
+                        color: Colors.black,
+                        size: 36,
+                      ),
+                      SizedBox(width: 6),
+                      Text(
+                        "Sign in with Google",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -240,6 +274,68 @@ class _AuthPageState extends State<AuthPage> {
     } else {
       setState(() => isLogging = false);
       Utils().showToast(Utils.stripHtmlIfNeeded(result["message"]));
+    }
+  }
+
+  Future signInWithGoogle() async {
+    try {
+      if (isLogging) return;
+      Utils().showToast("Please wait...");
+      var googleSignIn = GoogleSignIn();
+      GoogleSignInAccount? credential = await googleSignIn.signIn();
+      if (credential != null) {
+        GoogleSignInAuthentication? authResult = await credential.authentication;
+        var accessToken = authResult.accessToken;
+        if (accessToken != null) {
+          var map = await Services().googleSignIn(
+            accessToken,
+            email: credential.email,
+            displayName: credential.displayName,
+          );
+          if (map != null) {
+            String? authToken = map["token"] as String?;
+
+            if (authToken == null) {
+              Utils().showToast("Authentication failed! please try again.");
+              return;
+            }
+
+            setState(() => isLogging = true);
+            UserModel user = UserModel(
+              username: map["user_name"] ?? "",
+              expireIn: DateTime.now().toString(),
+              accessToken: authToken,
+            );
+
+            var db = await SharedPreferences.getInstance();
+            await db.setString(CacheKeyModel.userModelKey, json.encode(user.toMap()));
+
+            token = user.accessToken;
+
+            bool canShowMovie = await Services().canShowMovie;
+
+            if (mounted) {
+              Navigator.of(context).pushAndRemoveUntil(
+                MyPageRoute(
+                  builder: (_) =>
+                  canShowMovie ? const BottomNavPage() : const CoverHomePage(),
+                ),
+                    (route) => false,
+              );
+            }
+            Services().saveAuthFromClient(map);
+          }
+        } else {
+          setState(() => isLogging = false);
+          Utils().showToast("Authentication failed! please try again.");
+        }
+      } else {
+        setState(() => isLogging = false);
+        Utils().showToast("Error couldn't sign in at this time!");
+      }
+    } on PlatformException catch (e) {
+      setState(() => isLogging = false);
+      Utils().showToast("Error! ${e.message}");
     }
   }
 }

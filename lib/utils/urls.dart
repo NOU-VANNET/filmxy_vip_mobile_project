@@ -1,5 +1,5 @@
 class Urls {
-  static String apiDomain({String route = ""}) => "https://dev.filmxy.vip/api/v1/$route";
+  static String apiDomain({String route = ""}) => "https://app.playerapi.cc/api/v1/$route";
 
   static List<Map<String, String>> get labelMaps => [
     {
