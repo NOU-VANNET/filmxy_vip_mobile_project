@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vip/controllers/ad_controller.dart';
 import 'package:vip/login_page.dart';
 import 'package:vip/cover_app_pages/home.dart';
 import 'package:vip/models/app_status_model.dart';
@@ -17,6 +19,7 @@ import 'package:vip/utils/dark_light.dart';
 import 'package:vip/utils/extensions.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path_provider/path_provider.dart';
+import 'package:vip/utils/global_val.dart';
 
 class InitPage extends StatefulWidget {
   const InitPage({super.key});
@@ -53,6 +56,7 @@ class _InitPageState extends State<InitPage> {
         AppStatusModel? appStatus = await Services().getAppStatus;
 
         if (appStatus != null) {
+          adFrequencyInMinute = appStatus.adFrequencyInMinute;
           Future go() async {
             if (appStatus.appDisabled) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -407,9 +411,14 @@ class _InitPageState extends State<InitPage> {
     );
   }
 
+  Future initStateOnStart() async {
+    await initialize();
+    Get.put(AdsController()).initializeFirstAd();
+  }
+
   @override
   void initState() {
-    initialize();
+    initStateOnStart();
     super.initState();
   }
 

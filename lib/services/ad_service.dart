@@ -3,6 +3,7 @@ import "package:google_mobile_ads/google_mobile_ads.dart";
 bool _testMode = false;
 
 class AdService {
+
   static Future<InitializationStatus> initialize({
     bool testMode = false,
   }) async {
@@ -24,12 +25,16 @@ class AdService {
     );
   }
 
-  static Future showAppOpenAd() async {
+  static Future showAppOpenAd({FullScreenContentCallback<AppOpenAd>? fullScreenContentCallback}) async {
     return AppOpenAd.load(
       adUnitId: _appOpenUnitId,
       request: const AdRequest(),
       adLoadCallback: AppOpenAdLoadCallback(
-        onAdLoaded: (ad) {
+        onAdLoaded: (ad) async {
+          if (fullScreenContentCallback != null) {
+            ad.fullScreenContentCallback = fullScreenContentCallback;
+          }
+          await Future.delayed(const Duration(milliseconds: 200));
           ad.show();
         },
         onAdFailedToLoad: (error) {
@@ -41,7 +46,7 @@ class AdService {
   }
 
   static String get _appOpenUnitId =>
-      _testMode ? "ca-app-pub-3940256099942544/3419835294" : "";
+      _testMode ? "ca-app-pub-3940256099942544/3419835294" : "ca-app-pub-7976389538583869/1301620838";
   static String get _interstitialUnitId =>
-      _testMode ? "ca-app-pub-3940256099942544/1033173712" : "";
+      _testMode ? "ca-app-pub-3940256099942544/1033173712" : "ca-app-pub-7976389538583869/5185025529";
 }

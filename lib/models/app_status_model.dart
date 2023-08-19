@@ -25,6 +25,8 @@ class AppStatusModel {
     this.apiVersion = '',
   });
 
+  int get adFrequencyInMinute => int.parse(admobFrequency);
+
   Future<bool> get isUpdateNow async {
     var info = await PackageInfo.fromPlatform();
     String currentAppVersion = info.version;

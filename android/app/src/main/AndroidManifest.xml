@@ -77,6 +77,12 @@
             <meta-data android:name="vn.hunghd.flutterdownloader.MAX_CONCURRENT_TASKS" android:value="4"/>
         </provider>
 
+        <!-- Test AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
+        <!-- Product AdMob app ID: ca-app-pub-7976389538583869~4755965907 -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713" />
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
