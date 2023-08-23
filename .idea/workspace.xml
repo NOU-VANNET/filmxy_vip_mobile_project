@@ -6,12 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9883b20e-042c-4df3-9052-51e85dde7bba" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/init_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/init_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/app_status_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/app_status_model.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/pages/bottom_nav.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/bottom_nav.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/pages/detail_page/detail_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/pages/detail_page/detail_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/services/ad_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/services/ad_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
