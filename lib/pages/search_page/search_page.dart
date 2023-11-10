@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:vip/controllers/search_controller.dart';
+import 'package:vip/controllers/search_controller.dart' as search;
 import 'package:vip/pages/search_page/components/item_view.dart';
 import 'package:vip/utils/dark_light.dart';
 import 'package:vip/utils/size.dart';
@@ -11,8 +11,8 @@ class SearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SearchController>(
-      init: SearchController(),
+    return GetBuilder<search.SearchController>(
+      init: search.SearchController(),
       autoRemove: false,
       builder: (c) => GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),

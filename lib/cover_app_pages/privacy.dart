@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:url_launcher/url_launcher.dart';
-import 'package:vip/utils/dark_light.dart';
 
 class CoverPrivacyPage extends StatefulWidget {
   const CoverPrivacyPage({super.key});

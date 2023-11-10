@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vip/cover_app_pages/favorites.dart';
 import 'package:vip/cover_app_pages/privacy.dart';
-import 'package:vip/login_page.dart';
 
 enum CoverMediaType {
   video,
@@ -38,7 +37,7 @@ class CoverDrawerWidget extends StatelessWidget {
             SizedBox(
               width: context.width,
               child: const Text(
-                'VIP APP',
+                'Monkey Player',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
@@ -123,8 +122,8 @@ class CoverDrawerWidget extends StatelessWidget {
                 side: BorderSide.none,
                 backgroundColor: Colors.transparent,
               ),
-              child: Row(
-                children: const [
+              child: const Row(
+                children: [
                   Icon(
                     Icons.favorite,
                     color: Colors.white54,
@@ -144,9 +143,9 @@ class CoverDrawerWidget extends StatelessWidget {
             OutlinedButton(
               onPressed: () async {
                 try {
-                  Uri uri = Uri.parse('mailto:vipplayerxt@gmail.com');
+                  Uri uri = Uri.parse('https://www.playerapi.cc/contact/');
                   if (await canLaunchUrl(uri)) {
-                    await launchUrl(uri);
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
                   }
                 } catch (e) {
                   debugPrint('$e');
@@ -156,8 +155,8 @@ class CoverDrawerWidget extends StatelessWidget {
                 side: BorderSide.none,
                 backgroundColor: Colors.transparent,
               ),
-              child: Row(
-                children: const [
+              child: const Row(
+                children: [
                   Icon(
                     Icons.email,
                     color: Colors.white54,
@@ -186,8 +185,8 @@ class CoverDrawerWidget extends StatelessWidget {
                 side: BorderSide.none,
                 backgroundColor: Colors.transparent,
               ),
-              child: Row(
-                children: const [
+              child: const Row(
+                children: [
                   Icon(
                     Icons.privacy_tip,
                     color: Colors.white54,
