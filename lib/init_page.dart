@@ -88,7 +88,7 @@ class _InitPageState extends State<InitPage> {
               if (await f.exists()) {
                 await f.delete();
               }
-              goCoverPage();
+              goLogin(true);
             }
           }
 
@@ -144,6 +144,7 @@ class _InitPageState extends State<InitPage> {
 
   Future<File?> getAuthFile() async {
     var parentDir = await getApplicationDocumentsDirectory();
+
     File authFile = File('${parentDir.path}/auth/auth.json');
 
     if (await authFile.exists()) {
@@ -167,7 +168,6 @@ class _InitPageState extends State<InitPage> {
         });
         Map<String, dynamic> map = json.decode(source) as Map<String, dynamic>;
         if (map['token'] != null) {
-          await foundedAuthFile.delete();
           return await Services().saveAuthFromClient(map);
         }
         return foundedAuthFile;

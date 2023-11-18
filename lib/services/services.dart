@@ -83,8 +83,7 @@ class Services implements Repository {
   }
 
   Future<bool> get canShowMovie async {
-    var res = await get(Uri.parse(Urls.apiDomain(route: 'homepage')),
-        headers: headers);
+    var res = await get(Uri.parse(Urls.apiDomain(route: 'homepage')), headers: headers);
     return res.statusCode == 200;
   }
 
