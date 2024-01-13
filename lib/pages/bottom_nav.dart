@@ -1,12 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:vip/pages/discover_page/discover.dart';
 import 'package:vip/pages/download_page/download.dart';
 import 'package:vip/pages/home_page/home_page.dart';
-import 'package:vip/services/ad_service.dart';
 import 'package:vip/utils/dark_light.dart';
 
 class BottomNavPage extends StatefulWidget {
@@ -22,44 +18,6 @@ class _BottomNavPageState extends State<BottomNavPage> {
   int currentIndex = 0;
 
   bool isDark = darkMode;
-
-  Timer? _delayAppOpenAd;
-
-  bool reopenAppAd = false;
-
-  void _onAppStateChanged(AppState appState) {
-    debugPrint("App State $appState");
-    if (appState == AppState.foreground) {
-      if (reopenAppAd) {
-        AdService.showAppOpenAd(
-          fullScreenContentCallback: FullScreenContentCallback(
-            onAdShowedFullScreenContent: (ad) {
-              reopenAppAd = false;
-              setState(() {});
-            },
-          ),
-        );
-      }
-      _delayAppOpenAd ??= Timer(const Duration(minutes: 3), () {
-        reopenAppAd = true;
-        _delayAppOpenAd = null;
-        setState(() {});
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    AppStateEventNotifier.startListening();
-    AppStateEventNotifier.appStateStream.listen(_onAppStateChanged);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    AppStateEventNotifier.stopListening();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

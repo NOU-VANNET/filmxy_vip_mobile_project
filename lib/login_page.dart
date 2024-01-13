@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vip/cover_app_pages/home.dart';
 import 'package:vip/models/cache_key_model.dart';
 import 'package:vip/models/user_model.dart';
 import 'package:vip/pages/bottom_nav.dart';
@@ -171,9 +170,9 @@ class _AuthPageState extends State<AuthPage> {
                       vertical: 2,
                     ),
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: const [
+                    children: [
                       Icon(
                         Icons.g_mobiledata_rounded,
                         color: Colors.black,
@@ -259,13 +258,10 @@ class _AuthPageState extends State<AuthPage> {
 
       token = user.accessToken;
 
-      bool canShowMovie = await Services().canShowMovie;
-
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
           MyPageRoute(
-            builder: (_) =>
-                canShowMovie ? const BottomNavPage() : const CoverHomePage(),
+            builder: (_) => const BottomNavPage(),
           ),
           (route) => false,
         );
@@ -312,13 +308,10 @@ class _AuthPageState extends State<AuthPage> {
 
             token = user.accessToken;
 
-            bool canShowMovie = await Services().canShowMovie;
-
             if (mounted) {
               Navigator.of(context).pushAndRemoveUntil(
                 MyPageRoute(
-                  builder: (_) =>
-                  canShowMovie ? const BottomNavPage() : const CoverHomePage(),
+                  builder: (_) => const BottomNavPage(),
                 ),
                     (route) => false,
               );

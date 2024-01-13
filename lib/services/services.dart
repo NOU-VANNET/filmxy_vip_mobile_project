@@ -371,8 +371,7 @@ class Services implements Repository {
           "data": response.body,
         };
       } else {
-        final map = json.decode(response.body);
-        return {"code": "error", "message": map['message']};
+        return {"code": "error", "message": "Something went wrong while login!"};
       }
     } on PlatformException catch (e) {
       return {

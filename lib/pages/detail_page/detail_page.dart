@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:vip/controllers/ad_controller.dart';
 import 'package:vip/controllers/download_controller.dart';
 import 'package:vip/models/detail_model.dart';
 import 'package:vip/models/movie_model.dart';
@@ -14,7 +13,6 @@ import 'package:vip/pages/search_page/search_page.dart';
 import 'package:vip/services/services.dart';
 import 'package:vip/utils/custom_page_transition.dart';
 import 'package:vip/utils/dark_light.dart';
-import 'package:vip/utils/global_val.dart';
 import 'package:vip/utils/size.dart';
 import 'package:video_player/video_player.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -176,7 +174,6 @@ class _DetailPageState extends State<DetailPage> {
   void initState() {
     getDetail();
     Get.put(DownloadController()).loadTask();
-    Get.put(AdsController()).showInterstitialAd(coolDown: Duration(minutes: adFrequencyInMinute));
     super.initState();
   }
 

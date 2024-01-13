@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:vip/init_page.dart';
 import 'package:vip/pages/detail_page/detail_page.dart';
-import 'package:vip/services/ad_service.dart';
 import 'package:vip/utils/custom_page_transition.dart';
 import 'package:vip/utils/dark_light.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,8 +25,6 @@ Future<void> main() async {
   );
 
   await FlutterDownloader.initialize(ignoreSsl: true);
-
-  await AdService.initialize(testMode: true);
 
   readDetailCache();
   runApp(const MyApp());
@@ -51,6 +48,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.red,
               scaffoldBackgroundColor: darkLight,
+              useMaterial3: false,
               appBarTheme: const AppBarTheme(
                 elevation: 0,
                 backgroundColor: Colors.transparent,

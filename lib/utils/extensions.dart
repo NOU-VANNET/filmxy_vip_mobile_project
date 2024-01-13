@@ -85,3 +85,13 @@ extension DATETIMEEXTENSIONS on DateTime {
   }
 
 }
+
+extension ListOperator<T> on List<T> {
+  bool isExist(bool Function(T e) test) {
+    for (var element in this) {
+      if (test(element)) return true;
+    }
+    return false;
+  }
+
+}
