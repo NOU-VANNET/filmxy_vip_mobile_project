@@ -13,6 +13,7 @@ import 'package:vip/pages/search_page/search_page.dart';
 import 'package:vip/services/services.dart';
 import 'package:vip/utils/custom_page_transition.dart';
 import 'package:vip/utils/dark_light.dart';
+import 'package:vip/utils/extensions.dart';
 import 'package:vip/utils/size.dart';
 import 'package:video_player/video_player.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -70,41 +71,37 @@ class _DetailPageState extends State<DetailPage> {
 
   Future _initTrailer() async {
     String linkToPlay = '';
-    final videoId = convertYoutubeUrlToId(detailModel!.trailer);
 
-    if (videoId != null) {
-      var yt = YoutubeExplode();
-      final manifest = await yt.videos.streamsClient.getManifest(videoId);
+    var yt = YoutubeExplode();
+    final manifest =
+        await yt.videos.streamsClient.getManifest(detailModel!.trailer);
 
-      for (var i in manifest.muxed) {
-        int quality = int.parse(i.qualityLabel.split('p')[0]);
-        if (quality == 720) {
-          linkToPlay = i.url.toString();
-          break;
-        } else if (quality == 480) {
-          linkToPlay = i.url.toString();
-          break;
-        } else if (quality == 360) {
-          linkToPlay = i.url.toString();
-          break;
-        } else if (quality == 240) {
-          linkToPlay = i.url.toString();
-          break;
-        }
+    for (var i in manifest.muxedStreams) {
+      int quality = int.parse(i.qualityLabel.split('p')[0]);
+      if (quality == 720) {
+        linkToPlay = i.url.toString();
+        break;
+      } else if (quality == 480) {
+        linkToPlay = i.url.toString();
+        break;
+      } else if (quality == 360) {
+        linkToPlay = i.url.toString();
+        break;
+      } else if (quality == 240) {
+        linkToPlay = i.url.toString();
+        break;
       }
+    }
 
-      if (linkToPlay.isNotEmpty) {
-        ytController = VideoPlayerController.networkUrl(Uri.parse(linkToPlay))
-          ..initialize().then((_) async {
-            ytController?.addListener(_ytPlayerListener);
-            if (ytController!.value.isInitialized) {
-              await ytController?.play();
-              if (mounted) setState(() {});
-            }
-          });
-      } else {
-        isTrailerError = true;
-      }
+    if (linkToPlay.isNotEmpty) {
+      ytController = VideoPlayerController.networkUrl(Uri.parse(linkToPlay))
+        ..initialize().then((_) async {
+          ytController?.addListener(_ytPlayerListener);
+          if (ytController!.value.isInitialized) {
+            await ytController?.play();
+            if (mounted) setState(() {});
+          }
+        });
     } else {
       isTrailerError = true;
     }
@@ -119,29 +116,6 @@ class _DetailPageState extends State<DetailPage> {
       isTrailerError = true;
       setState(() {});
     }
-  }
-
-  static String? convertYoutubeUrlToId(String url,
-      {bool trimWhitespaces = true}) {
-    if (!url.contains("http") && (url.length == 11)) return url;
-    if (trimWhitespaces) url = url.trim();
-
-    for (var exp in [
-      RegExp(
-          r"^https:\/\/(?:www\.|m\.)?youtube\.com\/watch\?v=([_\-a-zA-Z0-9]{11}).*$"),
-      RegExp(
-          r"^https:\/\/(?:music\.)?youtube\.com\/watch\?v=([_\-a-zA-Z0-9]{11}).*$"),
-      RegExp(
-          r"^https:\/\/(?:www\.|m\.)?youtube\.com\/shorts\/([_\-a-zA-Z0-9]{11}).*$"),
-      RegExp(
-          r"^https:\/\/(?:www\.|m\.)?youtube(?:-nocookie)?\.com\/embed\/([_\-a-zA-Z0-9]{11}).*$"),
-      RegExp(r"^https:\/\/youtu\.be\/([_\-a-zA-Z0-9]{11}).*$")
-    ]) {
-      Match? match = exp.firstMatch(url);
-      if (match != null && match.groupCount >= 1) return match.group(1);
-    }
-
-    return null;
   }
 
   Future<DetailModel> getDetailModel(
@@ -240,7 +214,8 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                 )
               : const Center(
-                  child: CircularProgressIndicator(color: Colors.green)),
+                  child: CircularProgressIndicator(color: Colors.green),
+                ),
         );
       },
     );

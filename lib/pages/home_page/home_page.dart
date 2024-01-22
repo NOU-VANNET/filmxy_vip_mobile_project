@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage>
       title: Padding(
         padding: EdgeInsets.only(left: 8.sp),
         child: Image.asset(
-          "assets/icons/filmxy.png",
+          "assets/icons/v.png",
           fit: BoxFit.fitHeight,
           height: 30.sp,
         ),

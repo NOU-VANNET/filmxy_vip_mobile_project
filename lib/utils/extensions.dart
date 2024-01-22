@@ -1,4 +1,5 @@
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 extension DATETIMEEXTENSIONS on DateTime {
   ///Return true if expired otherwise false ||
@@ -94,4 +95,18 @@ extension ListOperator<T> on List<T> {
     return false;
   }
 
+}
+
+extension StreamManifestInfoExt on StreamManifest {
+  List<MuxedStreamInfo> get muxedStreams {
+    List<MuxedStreamInfo> muxeds = [];
+    for (var mux in muxed) {
+      if (mux.container == StreamContainer.mp4) {
+        if (!muxeds.isExist((e) => e.videoCodec == mux.videoCodec)) {
+          muxeds.add(mux);
+        }
+      }
+    }
+    return muxeds;
+  }
 }

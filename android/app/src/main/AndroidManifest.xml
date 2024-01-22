@@ -39,7 +39,7 @@
     </queries>
 
     <application
-        android:label="Monkey Player"
+        android:label="VIP"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true">

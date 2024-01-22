@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         designSize: const Size(360, 767),
         builder: (context, _) {
           return GetMaterialApp(
-            title: 'Monkey Player',
+            title: 'VIP Player',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               primarySwatch: Colors.red,
